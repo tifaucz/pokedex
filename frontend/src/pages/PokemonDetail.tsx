@@ -114,40 +114,20 @@ const StatBar: React.FC<{
   );
 };
 
-const FADE_OUT_MS = 200;
-
-type FadeState = 'idle' | 'in' | 'out';
-
 const PokemonDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [pokemon, setPokemon] = useState<PokemonDetailType | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [fadeState, setFadeState] = useState<FadeState>('idle');
   const navigate = useNavigate();
 
   const currentId = id ? parseInt(id) : 1;
-
-  // Trigger fade-in once data is loaded
-  useEffect(() => {
-    if (!loading && pokemon) setFadeState('in');
-  }, [loading, pokemon]);
-
-  // Reset to idle when navigating between pokemon (id changes)
-  useEffect(() => {
-    setFadeState('idle');
-  }, [id]);
 
   useEffect(() => {
     if (id) {
       fetchPokemon(parseInt(id));
     }
   }, [id]);
-
-  const navigateWithFadeOut = (path: string) => {
-    setFadeState('out');
-    setTimeout(() => navigate(path), FADE_OUT_MS);
-  };
 
   const fetchPokemon = async (pokemonId: number) => {
     try {
@@ -163,18 +143,18 @@ const PokemonDetail: React.FC = () => {
     }
   };
 
+  const primaryType = pokemon?.types?.[0] || 'normal';
+  const typeColor = typeColors[primaryType] || typeColors.normal;
+
   const goToPrevPokemon = () => {
     if (currentId > 1) {
-      navigateWithFadeOut(`/pokemon/${currentId - 1}`);
+      navigate(`/pokemon/${currentId - 1}`);
     }
   };
 
   const goToNextPokemon = () => {
-    navigateWithFadeOut(`/pokemon/${currentId + 1}`);
+    navigate(`/pokemon/${currentId + 1}`);
   };
-
-  const primaryType = pokemon?.types?.[0] || 'normal';
-  const typeColor = typeColors[primaryType] || typeColors.normal;
 
   // Loading state
   if (loading) {
@@ -195,7 +175,7 @@ const PokemonDetail: React.FC = () => {
         <div className="text-center">
           <p className="text-primary mb-4">{error || 'Pokemon not found'}</p>
           <button
-            onClick={() => navigateWithFadeOut('/')}
+            onClick={() => navigate('/')}
             className="bg-primary hover:bg-primary/90 text-white px-6 py-2 rounded-full text-sm font-medium transition"
           >
             Back to List
@@ -207,17 +187,17 @@ const PokemonDetail: React.FC = () => {
 
   return (
     <div
-      className={`min-h-screen p-1 font-poppins relative ${fadeState === 'in' ? 'animate-page-fade-in' : fadeState === 'out' ? 'animate-page-fade-out' : ''}`}
+      className="min-h-screen p-1 font-poppins relative animate-page-fade-in"
       style={{ backgroundColor: typeColor }}
     >
       {/* Pokeball watermark - top right */}
       <PokeballWatermark className="absolute w-[208px] h-[208px] top-2 right-2 text-white pointer-events-none" />
-
+ 
       <div className="flex flex-col h-screen max-w-[360px] mx-auto">
         {/* Header */}
         <header className="flex items-center px-5 pt-5 pb-6 gap-2 relative z-10">
           <button
-            onClick={() => navigateWithFadeOut('/')}
+            onClick={() => navigate('/')}
             className="w-8 h-8 flex items-center justify-center text-white"
           >
             <BackArrowIcon className="w-8 h-8" />

@@ -52,15 +52,12 @@ describe('ProtectedRoute', () => {
   })
 
   it('renders children when user is authenticated', async () => {
-    // Mock authenticated state
+    // Mock authenticated state BEFORE rendering
     vi.mocked(localStorage.getItem).mockImplementation((key) => {
       if (key === 'token') return 'valid-token'
       if (key === 'user') return JSON.stringify({ username: 'admin' })
       return null
     })
-
-    // Need to re-import to pick up the new mock
-    vi.resetModules()
 
     renderWithRouter(
       <Routes>
@@ -76,10 +73,9 @@ describe('ProtectedRoute', () => {
       </Routes>
     )
 
-    // The component reads localStorage on mount, which happens after the mock is set
-    // But the AuthProvider already ran with the null mock. We need a different approach.
-    // Just verify the redirect happens when not authenticated
-    expect(screen.getByText('Login Page')).toBeInTheDocument()
+    // When authenticated, should render protected content, not redirect
+    expect(screen.getByText('Protected Content')).toBeInTheDocument()
+    expect(screen.queryByText('Login Page')).not.toBeInTheDocument()
   })
 
   it('preserves route when redirecting to login', () => {

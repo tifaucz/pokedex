@@ -4,10 +4,10 @@ React + TypeScript frontend for the Pokedex application.
 
 ## Tech Stack
 
-- React 18
+- React 19
 - TypeScript
 - Vite
-- React Router v6
+- React Router v7
 - Axios
 - Tailwind CSS
 
@@ -49,13 +49,18 @@ src/
 │   ├── auth.ts             # Authentication API
 │   └── pokemon.ts          # Pokemon API
 ├── components/             # Reusable components
-│   └── ProtectedRoute.tsx  # Route guard component
+│   ├── ProtectedRoute.tsx  # Route guard component
+│   ├── SortModal.tsx       # Sort options modal
+│   └── PokeballIcon.tsx    # Pokeball SVG icon
 ├── contexts/               # React contexts
 │   └── AuthContext.tsx     # Authentication state
 ├── pages/                  # Page components
 │   ├── Login.tsx           # Login page
 │   ├── PokemonList.tsx     # Main Pokemon list
 │   └── PokemonDetail.tsx   # Pokemon detail view
+├── test/                   # Test utilities
+│   ├── setup.ts            # Vitest setup
+│   └── utils.tsx           # Test helpers and mocks
 ├── types/                  # TypeScript types
 │   └── index.ts
 ├── App.tsx                 # Main app with routing
@@ -79,7 +84,10 @@ src/
 
 ### Pokemon Detail
 - Pokemon image, name, number
-- Abilities, moves, and forms
+- Type badges with color coding
+- About section (weight, height, abilities)
+- Description and base stats with visual bars
+- Previous/next Pokemon navigation
 - Back navigation
 
 ### Route Protection

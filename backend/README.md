@@ -86,6 +86,14 @@ app/
 └── services/
     ├── jwt_service.rb            # JWT encode/decode
     └── pokeapi_service.rb        # PokeAPI integration
+
+spec/
+├── requests/
+│   ├── auth_spec.rb              # Auth endpoint tests
+│   └── pokemons_spec.rb          # Pokemon endpoint tests
+└── services/
+    ├── jwt_service_spec.rb       # JWT service tests
+    └── pokeapi_service_spec.rb   # PokeAPI service tests
 ```
 
 ## Architecture

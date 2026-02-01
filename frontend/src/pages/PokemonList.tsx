@@ -21,7 +21,7 @@ const SearchIcon: React.FC<{ className?: string }> = ({ className }) => (
   </svg>
 );
 
-// Tag/Sort icon component (# symbol)
+// Tag/Sort icon component (# symbol) - for sorting by number
 const TagIcon: React.FC<{ className?: string }> = ({ className }) => (
   <svg
     className={className}
@@ -30,6 +30,19 @@ const TagIcon: React.FC<{ className?: string }> = ({ className }) => (
     xmlns="http://www.w3.org/2000/svg"
   >
     <path d="M6 2L4.5 14M11.5 2L10 14M14 4.5H2M13.5 11.5H1.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" fill="none" />
+  </svg>
+);
+
+// Text/Sort icon component (A with underline) - for sorting by name
+const TextSortIcon: React.FC<{ className?: string }> = ({ className }) => (
+  <svg
+    className={className}
+    viewBox="0 0 16 16"
+    fill="currentColor"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <text x="8" y="11" textAnchor="middle" fontSize="11" fontWeight="bold" fill="currentColor">A</text>
+    <line x1="3" y1="14" x2="13" y2="14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
   </svg>
 );
 
@@ -97,20 +110,9 @@ const PokemonList: React.FC = () => {
   const [offset, setOffset] = useState(0);
   const [sortField, setSortField] = useState<SortField>('number');
   const [showSortModal, setShowSortModal] = useState(false);
-  const [fadeState, setFadeState] = useState<'idle' | 'in' | 'out'>('idle');
   const sentinelRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
-
-  // Trigger fade-in once initial data is loaded
-  useEffect(() => {
-    if (!loading) setFadeState('in');
-  }, [loading]);
-
-  const navigateWithFadeOut = (path: string) => {
-    setFadeState('out');
-    setTimeout(() => navigate(path), FADE_OUT_MS);
-  };
 
   // Debounce search input (300ms)
   useEffect(() => {
@@ -203,7 +205,7 @@ const PokemonList: React.FC = () => {
   }
 
   return (
-    <div className={`min-h-screen bg-primary p-1 font-poppins ${fadeState === 'in' ? 'animate-page-fade-in' : fadeState === 'out' ? 'animate-page-fade-out' : ''}`}>
+    <div className="min-h-screen bg-primary p-1 font-poppins animate-page-fade-in">
       <div className="flex flex-col h-screen">
         {/* Header section */}
         <header className="px-3 pt-3 pb-2 flex-shrink-0">
@@ -233,7 +235,11 @@ const PokemonList: React.FC = () => {
               className="w-8 h-8 flex items-center justify-center bg-grayscale-white rounded-full shadow-inner-2dp flex-shrink-0"
               title="Sort"
             >
-              <TagIcon className="w-4 h-4 text-primary" />
+              {sortField === 'number' ? (
+                <TagIcon className="w-4 h-4 text-primary" />
+              ) : (
+                <TextSortIcon className="w-4 h-4 text-primary" />
+              )}
             </button>
           </div>
         </header>
@@ -260,7 +266,7 @@ const PokemonList: React.FC = () => {
                       key={pokemon.id}
                       pokemon={pokemon}
                       index={index}
-                      onClick={() => navigateWithFadeOut(`/pokemon/${pokemon.id}`)}
+                      onClick={() => navigate(`/pokemon/${pokemon.id}`)}
                     />
                   ))}
                 </div>
